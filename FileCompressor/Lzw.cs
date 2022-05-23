@@ -118,15 +118,15 @@ public class Lzw
 
     private void WriteCode(Stream writer, int code)
     {
-        _bitBuffer |= (ulong)code << (32 - MAX_BITS - _bitCounter); //make space and insert new code in buffer
-        _bitCounter += MAX_BITS; //increment bit counter
+        _bitBuffer |= (ulong)code << (32 - MAX_BITS - _bitCounter); // make space and insert new code in buffer
+        _bitCounter += MAX_BITS; // increment bit counter
 
-        while (_bitCounter >= 8) //write all the bytes we can
+        while (_bitCounter >= 8) // write all the bytes we can
         {
             // int temp = (byte)((_bitBuffer >> 24) & 255);
             writer.WriteByte((byte)((_bitBuffer >> 24) & 255)); //write byte from bit buffer
-            _bitBuffer <<= 8; //remove written byte from buffer
-            _bitCounter -= 8; //decrement counter
+            _bitBuffer <<= 8; // remove written byte from buffer
+            _bitCounter -= 8; // decrement counter
         }
     }
 
@@ -169,10 +169,10 @@ public class Lzw
                     currentCode = newCode;
                 }
 
-                while (currentCode > 255) //decode string by cycling back through the prefixes
+                while (currentCode > 255) // decode string by cycling back through the prefixes
                 {
-                    //lstDecodeStack.Add((byte)_charTable[currentCode]);
-                    //currentCode = _prefixTable[currentCode];
+                    // lstDecodeStack.Add((byte)_charTable[currentCode]);
+                    // currentCode = _prefixTable[currentCode];
                     decodeStack[counter] = (byte)_charTable[currentCode];
                     ++counter;
                     if (counter >= MAX_CODE)
@@ -219,11 +219,11 @@ public class Lzw
         }
     }
 
-    private int ReadCode(Stream pReader)
+    private int ReadCode(Stream reader)
     {
         while (_bitCounter <= 24) // fill up buffer
         {
-            _bitBuffer |= (ulong)pReader.ReadByte() << (24 - _bitCounter); // insert byte into buffer
+            _bitBuffer |= (ulong)reader.ReadByte() << (24 - _bitCounter); // insert byte into buffer
             _bitCounter += 8; // increment counter by 8 (1 byte)
         }
 
